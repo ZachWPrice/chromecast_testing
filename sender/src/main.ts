@@ -21,6 +21,9 @@ appRoot.innerHTML = `
     <p class="status-line">
       Status: <span id="cast-status">Waiting for Cast framework...</span>
     </p>
+    <button id="start-cast" class="start-cast-button" type="button">
+      Start Cast
+    </button>
     <google-cast-launcher class="cast-button"></google-cast-launcher>
     <p class="hint">
       Set <code>VITE_CAST_APP_ID</code> in <code>.env.local</code> once your
@@ -30,11 +33,23 @@ appRoot.innerHTML = `
 `
 
 const statusEl = document.querySelector<HTMLSpanElement>('#cast-status')
+const startCastButton = document.querySelector<HTMLButtonElement>('#start-cast')
 
 function setStatus(text: string): void {
   if (statusEl) {
     statusEl.textContent = text
   }
+}
+
+function formatCastError(error: unknown): string {
+  if (!error || typeof error !== 'object') {
+    return String(error)
+  }
+
+  const maybeError = error as { code?: string; description?: string; message?: string }
+  const code = maybeError.code ? `code=${maybeError.code}` : 'code=unknown'
+  const description = maybeError.description || maybeError.message || 'no description'
+  return `${code}; ${description}`
 }
 
 function initializeCast(): void {
@@ -51,6 +66,17 @@ function initializeCast(): void {
   })
 
   setStatus(`Ready to cast (App ID: ${appId}).`)
+
+  if (startCastButton) {
+    startCastButton.disabled = false
+    startCastButton.addEventListener('click', async () => {
+      try {
+        await context.requestSession()
+      } catch (error) {
+        setStatus(`Cast session failed: ${formatCastError(error)}`)
+      }
+    })
+  }
 
   context.addEventListener(
     castFramework.CastContextEventType.SESSION_STATE_CHANGED,
@@ -81,14 +107,18 @@ function initializeCast(): void {
   )
 }
 
-if ('__onGCastApiAvailable' in window) {
-  window.__onGCastApiAvailable = (isAvailable: boolean) => {
-    if (isAvailable) {
-      initializeCast()
-      return
-    }
-    setStatus('Cast API is not available.')
+if (startCastButton) {
+  startCastButton.disabled = true
+}
+
+window.__onGCastApiAvailable = (isAvailable: boolean) => {
+  if (isAvailable) {
+    initializeCast()
+    return
   }
-} else {
-  setStatus('Cast script callback not registered.')
+  setStatus('Cast API is not available in this browser.')
+}
+
+if (window.cast?.framework) {
+  initializeCast()
 }

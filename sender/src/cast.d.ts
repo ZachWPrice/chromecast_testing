@@ -11,6 +11,7 @@ interface Window {
             receiverApplicationId: string
             autoJoinPolicy: string
           }): void
+          requestSession(): Promise<void>
           addEventListener(
             eventType: string,
             handler: (event: CastSessionStateChangedEvent) => void,

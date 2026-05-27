@@ -41,6 +41,22 @@ h1 {
   line-height: 1.5;
 }
 
+.start-cast-button {
+  border: 1px solid #4b5563;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin: 6px 0 10px;
+}
+
+.start-cast-button:disabled {
+  background: #374151;
+  cursor: not-allowed;
+}
+
 .cast-button {
   display: inline-block;
   margin: 8px 0 14px;
