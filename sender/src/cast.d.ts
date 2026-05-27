@@ -2,6 +2,10 @@ interface CastSessionStateChangedEvent {
   sessionState: string
 }
 
+interface CastSession {
+  sendMessage(namespace: string, data: unknown): Promise<void>
+}
+
 interface Window {
   cast?: {
     framework: {
@@ -11,6 +15,7 @@ interface Window {
             receiverApplicationId: string
             autoJoinPolicy: string
           }): void
+          getCurrentSession(): CastSession | null
           requestSession(): Promise<void>
           addEventListener(
             eventType: string,

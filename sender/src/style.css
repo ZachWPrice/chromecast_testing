@@ -57,6 +57,23 @@ h1 {
   cursor: not-allowed;
 }
 
+.random-color-button {
+  border: 1px solid #4b5563;
+  background: #7c3aed;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin: 6px 0 10px;
+  margin-left: 8px;
+}
+
+.random-color-button:disabled {
+  background: #374151;
+  cursor: not-allowed;
+}
+
 .cast-button {
   display: inline-block;
   margin: 8px 0 14px;
